@@ -22,7 +22,7 @@ A responsive, single-page interactive web form to assist Algerian users of the "
 
 ## المعاينة (Preview)
 
-![معاينة لتطبيق طلب تجديد الرمز السري](https://fekerineamar.github.io/dahabia-card-recover/)
+[معاينة لتطبيق طلب تجديد الرمز السري](https://fekerineamar.github.io/dahabia-card-recover/)
 
 ## التقنيات المستخدمة (Technologies)
 
