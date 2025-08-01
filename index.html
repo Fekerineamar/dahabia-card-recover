@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="fekerine amar">
+    <meta name="keywords" content="طلب تجديد الرمز السري, البطاقة الذهبية, بريد الجزائر, CCP, pin reset, post Algeria">
+    <title>طلب تجديد الرمز السري للبطاقة الذهبية</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutral (Alabaster) with Teal Accent -->
+    <!-- Application Structure Plan: A single-column, task-oriented form. The structure guides the user from personal details to selecting a reason, reviewing required documents, and finally printing the generated form. This is chosen for its simplicity and directness, making the process of filling a formal request less daunting and more interactive. -->
+    <!-- Visualization & Content Choices: Report Info: User details (Name, CCP) -> Goal: Collect/Verify -> Presentation: Pre-filled HTML inputs -> Interaction: Editable fields -> Justification: Standard form practice. Report Info: Reason for renewal -> Goal: Select one option -> Presentation: Interactive styled cards (HTML/CSS) -> Interaction: Click to select -> Justification: More engaging and user-friendly than standard radio buttons. Report Info: Final Form -> Goal: Generate Output -> Presentation: Formatted text block -> Interaction: Print button (`window.print()`) -> Justification: Provides the required physical document for submission. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+        }
+        .reason-card {
+            transition: all 0.2s ease-in-out;
+        }
+        .reason-card.selected {
+            border-color: #14B8A6; /* Teal-500 */
+            background-color: #F0FDFA; /* Teal-50 */
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .reason-card.selected .radio-icon {
+            background-color: #14B8A6;
+            border-color: #0F766E;
+        }
+        .reason-card.selected .radio-icon::after {
+            opacity: 1;
+        }
+        .radio-icon {
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            border: 2px solid #D1D5DB;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease-in-out;
+        }
+        .radio-icon::after {
+            content: '';
+            width: 0.75rem;
+            height: 0.75rem;
+            border-radius: 50%;
+            background-color: white;
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+        }
+        @media print {
+            body > * {
+                display: none !important;
+            }
+            #printable-area {
+                display: block !important;
+                position: static;
+                width: 100%;
+                font-size: 12pt;
+                color: black;
+            }
+            #printable-area p, #printable-area h1, #printable-area h2 {
+                color: black !important;
+            }
+            @page {
+                size: A4;
+                margin: 2cm;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="container mx-auto max-w-3xl p-4 sm:p-8">
+        
+        <header class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-teal-700">طلب تجديد الرمز السري للبطاقة الذهبية</h1>
+            <p class="mt-2 text-gray-600">نموذج تفاعلي لتسهيل عملية تقديم الطلب</p>
+        </header>
+
+        <main class="bg-white p-6 sm:p-8 rounded-2xl shadow-lg space-y-8">
+            
+            <section id="personal-info">
+                <h2 class="text-2xl font-bold border-r-4 border-teal-500 pr-4 mb-4">1. المعلومات الشخصية</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">الاسم واللقب</label>
+                        <input type="text" id="fullName" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500" value="مثال لا">
+                    </div>
+                    <div>
+                        <label for="ccp" class="block text-sm font-medium text-gray-700 mb-1">رقم الحساب الجاري البريدي (CCP)</label>
+                        <input type="text" id="ccp" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500" value="00799999000000000001">
+                    </div>
+                </div>
+            </section>
+
+            <section id="reason-selection">
+                <h2 class="text-2xl font-bold border-r-4 border-teal-500 pr-4 mb-4">2. سبب الطلب</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4" id="reasonsContainer">
+                    <div class="reason-card selected cursor-pointer border-2 border-gray-200 rounded-lg p-4 flex items-center space-x-4 space-x-reverse" data-reason="ضياع الرمز السري">
+                        <div class="radio-icon"></div>
+                        <span class="font-semibold">ضياع الرمز السري</span>
+                    </div>
+                    <div class="reason-card cursor-pointer border-2 border-gray-200 rounded-lg p-4 flex items-center space-x-4 space-x-reverse" data-reason="الرمز غير واضح">
+                        <div class="radio-icon"></div>
+                        <span class="font-semibold">الرمز غير واضح</span>
+                    </div>
+                    <div class="reason-card cursor-pointer border-2 border-gray-200 rounded-lg p-4 flex items-center space-x-4 space-x-reverse" data-reason="نسيان الرمز">
+                        <div class="radio-icon"></div>
+                        <span class="font-semibold">نسيان الرمز</span>
+                    </div>
+                </div>
+            </section>
+
+            <section id="documents">
+                <h2 class="text-2xl font-bold border-r-4 border-teal-500 pr-4 mb-4">3. الوثائق المطلوبة</h2>
+                <div class="bg-blue-50 border-r-4 border-blue-400 p-4 rounded-lg">
+                    <p class="font-semibold text-blue-800">الرجاء التأكد من إرفاق الوثائق التالية مع طلبك المطبوع:</p>
+                    <ul class="list-inside mt-2 space-y-1 text-blue-700">
+                        <li><span class="mr-2">📄</span> نسخة من بطاقة التعريف الوطنية</li>
+                        <li><span class="mr-2">💳</span> نسخة طبق الأصل من البطاقة الذهبية</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <section class="text-center pt-4">
+                 <button id="printButton" class="w-full md:w-auto bg-teal-600 text-white font-bold py-3 px-10 rounded-lg hover:bg-teal-700 focus:outline-none focus:ring-4 focus:ring-teal-300 transition-transform transform hover:scale-105">
+                    طباعة الطلب
+                </button>
+            </section>
+
+        </main>
+        
+        <footer class="text-center mt-8 text-sm text-gray-500">
+            <p>تم تصميم هذا النموذج لتسهيل الإجراءات الإدارية.</p>
+        </footer>
+    </div>
+
+    <!-- Area that will be printed -->
+    <div id="printable-area" class="hidden">
+        <div style="font-family: 'Cairo', sans-serif;">
+            <h1 style="text-align: center; font-weight: bold; font-size: 24px; margin-bottom: 40px;">طلب تجديد الرمز السري للبطاقة الذهبية</h1>
+            
+            <div style="margin-bottom: 20px;">
+                <p><strong style="font-weight: bold;">الاسم واللقب:</strong> <span id="print-fullName"></span></p>
+                <p><strong style="font-weight: bold;">رقم الحساب الجاري البريدي (CCP):</strong> <span id="print-ccp"></span></p>
+            </div>
+    
+            <h2 style="font-weight: bold; font-size: 20px; margin-bottom: 15px; margin-top: 30px; border-bottom: 1px solid #000; padding-bottom: 5px;">الموضوع: طلب تجديد الرمز السري</h2>
+    
+            <p style="line-height: 1.8; margin-top: 20px;">
+                أنا المواطن <strong style="font-weight: bold;" id="print-subjectName"></strong>، صاحب الحساب البريدي رقم <strong style="font-weight: bold;" id="print-subjectCcp"></strong>، أطلب منكم تجديد الرمز السري الخاص ببطاقتي الذهبية، وذلك بسبب:
+            </p>
+    
+            <p style="line-height: 1.8; margin-top: 15px;">
+                <strong style="font-weight: bold;" id="print-reason"></strong>
+            </p>
+    
+            <p style="line-height: 1.8; margin-top: 30px;">
+                أُقرّ بأنني المالك الشرعي للحساب وأُرفق مع هذا الطلب الوثائق التالية:
+            </p>
+
+            <ul style="line-height: 1.8; margin-top: 10px; padding-right: 20px;">
+                <li>نسخة من بطاقة التعريف الوطنية</li>
+                <li>نسخة طبق الأصل من البطاقة الذهبية</li>
+            </ul>
+            
+            <p style="line-height: 1.8; margin-top: 20px;">
+                أرجو منكم إحالة هذا الطلب إلى المركز الوطني للصكوك البريدية لاتخاذ الإجراءات اللازمة.
+            </p>
+    
+            <div style="margin-top: 60px; display: flex; justify-content: space-between; align-items: flex-end;">
+                <p><strong style="font-weight: bold;">التاريخ:</strong> …… / …… / 2025</p>
+                <p><strong style="font-weight: bold;">الإمضاء:</strong> ___________________</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const reasonsContainer = document.getElementById('reasonsContainer');
+            const reasonCards = reasonsContainer.querySelectorAll('.reason-card');
+            let selectedReason = 'ضياع الرمز السري';
+
+            reasonCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    reasonCards.forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    selectedReason = card.getAttribute('data-reason');
+                });
+            });
+
+            const printButton = document.getElementById('printButton');
+            printButton.addEventListener('click', () => {
+                const fullName = document.getElementById('fullName').value;
+                const ccp = document.getElementById('ccp').value;
+
+                document.getElementById('print-fullName').textContent = fullName;
+                document.getElementById('print-ccp').textContent = ccp;
+                document.getElementById('print-subjectName').textContent = fullName;
+                document.getElementById('print-subjectCcp').textContent = ccp;
+                document.getElementById('print-reason').textContent = selectedReason;
+
+                window.print();
+            });
+        });
+    </script>
+
+</body>
+</html>
